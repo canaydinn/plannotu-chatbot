@@ -2,8 +2,8 @@
 import { OpenAI } from "openai";
 import fs from "fs";
 import path from "path";
-import { cosineSimilarity } from "../../../utils/similarity";
-import { getEmbedding } from "../../../utils/embedding";
+import { cosineSimilarity } from "../../utils/similarity";
+import { getEmbedding } from "../../utils/embedding";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
