@@ -18,6 +18,12 @@ export default function Home() {
       const res = await axios.post("/api/chat", { prompt: input });
       const reply = { role: "assistant", content: res.data.result };
       setMessages((prev) => [...prev, newMessage, reply]);
+       // ✅ CSV'ye yaz
+    await axios.post("/api/save-message", {
+      user_id: "web_user_1",
+      prompt: input,
+      response: replyText,
+    });
     } catch (err) {
       setMessages((prev) => [
         ...prev,
