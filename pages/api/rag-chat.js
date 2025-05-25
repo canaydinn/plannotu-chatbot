@@ -2,9 +2,10 @@ export const config = {
   runtime: "nodejs"
 };
 
-import fetch from "node-fetch"; // 🆕
+import fetch from "node-fetch";
 import fs from "fs";
 import path from "path";
+import { google } from "googleapis"; // ✅ Google Sheets için
 import { cosineSimilarity } from "../../utils/similarity";
 import { getEmbedding } from "../../utils/embedding";
 
@@ -19,7 +20,12 @@ console.log("📚 Chunk sayısı:", rawChunks.length);
 
 export default async function handler(req, res) {
   const { prompt } = req.body;
+  const user_id = "web_user_1"; // isteğe bağlı sabit kullanıcı ID
+  const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
+  
   if (!prompt) return res.status(400).json({ error: "Prompt gerekli" });
+
+  let reply = "Yanıt alınamadı.";
 
   try {
     const queryEmbedding = await getEmbedding(prompt);
@@ -58,8 +64,28 @@ export default async function handler(req, res) {
     });
 
     const completion = await response.json();
+    reply = completion.choices?.[0]?.message?.content || reply;
 
-    return res.status(200).json({ result: completion.choices[0].message.content });
+    // ✅ Google Sheets'e yaz
+    const creds = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+    const auth = new google.auth.GoogleAuth({
+      credentials: creds,
+      scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    });
+
+    const sheets = google.sheets({ version: "v4", auth });
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: process.env.GOOGLE_SHEET_ID,
+      range: "Sayfa1!A:D",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [[timestamp, user_id, prompt, reply]],
+      },
+    });
+
+    return res.status(200).json({ result: reply });
+
   } catch (err) {
     console.error("Hata:", err);
     return res.status(500).json({ error: "Cevap oluşturulamadı.", detail: err.message });
