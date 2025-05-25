@@ -1,23 +1,20 @@
-// pages/api/rag-chat.js
 export const config = {
   runtime: "nodejs"
 };
 
-import { OpenAI } from "openai";
+import fetch from "node-fetch"; // 🆕
 import fs from "fs";
 import path from "path";
 import { cosineSimilarity } from "../../utils/similarity";
 import { getEmbedding } from "../../utils/embedding";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-// Chunk verisini oku (JSONL dosyasını .js dosyasına çevirebilirsin deploy için)
 const dataPath = path.join(process.cwd(), "data", "plan_chunks_master_v3.jsonl");
 const rawChunks = fs.readFileSync(dataPath, "utf-8")
   .split("\n")
   .filter(Boolean)
   .map((line) => JSON.parse(line));
-console.log("📚 Chunk sayısı:", rawChunks.length); 
+
+console.log("📚 Chunk sayısı:", rawChunks.length);
 
 export default async function handler(req, res) {
   const { prompt } = req.body;
@@ -26,7 +23,6 @@ export default async function handler(req, res) {
   try {
     const queryEmbedding = await getEmbedding(prompt);
 
-    // Benzer chunk'ları bul (ilk 5)
     const similarities = rawChunks.map((chunk) => {
       const score = cosineSimilarity(queryEmbedding, chunk.embedding);
       return { ...chunk, score };
@@ -38,44 +34,29 @@ export default async function handler(req, res) {
       .map((chunk) => chunk.content);
 
     const context = topChunks.join("\n\n");
-/*
-    const completion = await openai.chat.completions.create({
-  model: "gpt-4-turbo",
-  messages: [
-    {
-      role: "system",
-      content: "Sen uzman bir şehir plancısısın. Kullanıcının plan notu üretme isteğine aşağıdaki teknik ve biçimsel kurallara uyarak cevap ver:"
-    },
-    {
-      role: "user",
-      content: `Kullanıcı isteği: ${prompt}\n\nPlan arşivinden ilgi bağlam: ${context}`
-    }
-  ]
-});*/
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-  },
-  body: JSON.stringify({
-    model: "gpt-4-turbo",
-    messages: [
-      {
-        role: "system",
-        content: "Sen uzman bir şehir plancısısın. Kullanıcının plan notu üretme isteğine aşağıdaki teknik ve biçimsel kurallara uyarak cevap ver:",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
-      {
-        role: "user",
-        content: `Kullanıcı isteği: ${prompt}\n\nPlan arşivinden ilgi bağlam: ${context}`,
-      },
-    ],
-  }),
-});
+      body: JSON.stringify({
+        model: "gpt-4-turbo",
+        messages: [
+          {
+            role: "system",
+            content: "Sen uzman bir şehir plancısısın. Kullanıcının plan notu üretme isteğine aşağıdaki teknik ve biçimsel kurallara uyarak cevap ver:",
+          },
+          {
+            role: "user",
+            content: `Kullanıcı isteği: ${prompt}\n\nPlan arşivinden ilgi bağlam: ${context}`,
+          },
+        ],
+      }),
+    });
 
-const completion = await response.json();
-
-
+    const completion = await response.json();
 
     return res.status(200).json({ result: completion.choices[0].message.content });
   } catch (err) {
