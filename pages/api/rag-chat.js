@@ -40,8 +40,8 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "system",
-          content:
-            "Sen uzman bir şehir plancısısın. Kullanıcının plan notu üretme isteğine aşağıdaki teknik ve biçimsel kurallara uyarak cevap ver:
+          content:`
+Sen uzman bir şehir plancısısın. Kullanıcının plan notu üretme isteğine aşağıdaki teknik ve biçimsel kurallara uyarak cevap ver:
 
 Yanıt formatın zorunlu olarak şu şekilde olmalıdır:
 
@@ -55,7 +55,7 @@ En sona şu cümleyi mutlaka yaz:
 **“Bu not yukarıdaki kaynak plan notu örneklerine dayanmaktadır.”**
 
 Yanıt kesinlikle madde madde olmalı. Serbest metin kullanma.
-"
+      `
         },
         {
           role: "user",
