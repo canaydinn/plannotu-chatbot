@@ -36,11 +36,11 @@ export default async function handler(req, res) {
     const context = topChunks.join("\n\n");
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4-turbo",
-      messages: [
-        {
-          role: "system",
-          content:`
+  model: "gpt-4-turbo",
+  messages: [
+    {
+      role: "system",
+      content: `
 Sen uzman bir şehir plancısısın. Kullanıcının plan notu üretme isteğine aşağıdaki teknik ve biçimsel kurallara uyarak cevap ver:
 
 Yanıt formatın zorunlu olarak şu şekilde olmalıdır:
@@ -56,13 +56,14 @@ En sona şu cümleyi mutlaka yaz:
 
 Yanıt kesinlikle madde madde olmalı. Serbest metin kullanma.
       `
-        },
-        {
-          role: "user",
-          content: `Kullanıcı isteği: ${prompt}\n\nPlan arşivinden ilgi bağlam: ${context}`
-        }
-      ]
-    });
+    },
+    {
+      role: "user",
+      content: `Kullanıcı isteği: ${prompt}\n\nPlan arşivinden ilgi bağlam: ${context}`
+    }
+  ]
+});
+
 
     return res.status(200).json({ result: completion.choices[0].message.content });
   } catch (err) {
