@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
 
   try {
-    // 1️⃣ OpenAI'den yanıt al
+    // 1️⃣ OpenAI yanıtı al
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -32,16 +32,12 @@ export default async function handler(req, res) {
     const data = await openaiRes.json();
     reply = data.choices?.[0]?.message?.content || reply;
   } catch (openaiErr) {
-    console.error("🔴 OpenAI API error:", openaiErr.message);
-    return res.status(500).json({ error: "OpenAI yanıt hatası", detail: openaiErr.message });
+    console.error("🔴 OpenAI hatası:", openaiErr.message);
+    return res.status(500).json({ error: "OpenAI hatası", detail: openaiErr.message });
   }
 
-  // 2️⃣ Google Sheets'e kaydet
+  // 2️⃣ Sheets'e yaz
   try {
-    if (!process.env.GOOGLE_SERVICE_ACCOUNT || !process.env.GOOGLE_SHEET_ID) {
-      throw new Error("Google Sheets env değişkenleri eksik");
-    }
-
     const creds = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
     const auth = new google.auth.GoogleAuth({
       credentials: creds,
@@ -59,10 +55,10 @@ export default async function handler(req, res) {
     });
 
   } catch (sheetErr) {
-    console.error("🛑 Sheets API error:", sheetErr.stack);
+    console.error("🛑 Sheets API hatası:", sheetErr.stack);
     return res.status(500).json({ error: "Sheets API hatası", detail: sheetErr.message });
   }
 
-  // 3️⃣ Cevabı frontend'e gönder
+  // 3️⃣ Yanıtı gönder
   res.status(200).json({ result: reply });
 }
