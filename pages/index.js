@@ -8,31 +8,36 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   const sendMessage = async () => {
-    if (!input.trim()) return;
-    const newMessage = { role: "user", content: input };
-    setMessages([...messages, newMessage]);
-    setInput("");
-    setLoading(true);
+  if (!input.trim()) return;
+  const newMessage = { role: "user", content: input };
+  setMessages([...messages, newMessage]);
+  setInput("");
+  setLoading(true);
 
-    try {
-      const res = await axios.post("/api/chat", { prompt: input });
-      const reply = { role: "assistant", content: res.data.result };
-      setMessages((prev) => [...prev, newMessage, reply]);
-       // ✅ CSV'ye yaz
+  try {
+    const res = await axios.post("/api/chat", { prompt: input });
+    const replyText = res.data.result;
+    const reply = { role: "assistant", content: replyText };
+    setMessages((prev) => [...prev, newMessage, reply]);
+
+    // ✅ Google Sheets'e yaz
     await axios.post("/api/save-message", {
       user_id: "web_user_1",
       prompt: input,
       response: replyText,
     });
-    } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "❌ Hata oluştu. Lütfen tekrar deneyin." },
-      ]);
-    }
 
-    setLoading(false);
-  };
+  } catch (err) {
+    console.error("❌ Hata:", err.message);
+    setMessages((prev) => [
+      ...prev,
+      { role: "assistant", content: "❌ Hata oluştu. Lütfen tekrar deneyin." },
+    ]);
+  }
+
+  setLoading(false);
+};
+
 
   return (
     <div className="max-w-xl mx-auto p-4 font-sans">
