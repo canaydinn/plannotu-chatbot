@@ -52,7 +52,8 @@ Yanıt formatın zorunlu olarak şu şekilde olmalıdır:
 3. Uygulama, sosyal donatı ve diğer koşullar madde madde yazılır.
 
 En sona şu cümleyi mutlaka yaz:  
-**“Bu not yukarıdaki kaynak plan notu örneklerine dayanmaktadır.”**
+**"Bu not yukarıdaki kaynak plan notu örneklerine dayanmaktadır."**
+
 
 Yanıt kesinlikle madde madde olmalı. Serbest metin kullanma.
 `
