@@ -60,7 +60,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ result: completion.choices[0].message.content });
   } catch (err) {
-    console.error("Hata:", err.message);
+    console.error("Hata:", err);
     return res.status(500).json({ error: "Cevap oluşturulamadı.", detail: err.message });
   }
 }
