@@ -1,13 +1,8 @@
 // utils/similarity.js
 
-// İki vektör arasındaki kosinüs benzerliğini hesaplar
 export function cosineSimilarity(vecA, vecB) {
   const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
   const normA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
   const normB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
   return dotProduct / (normA * normB);
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 9ec22e01c65864020db0dec70cdbc7f8e68f39a9
