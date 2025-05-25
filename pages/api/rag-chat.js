@@ -40,7 +40,15 @@ export default async function handler(req, res) {
         {
           role: "system",
           content:
-            "Sen uzman bir şehir plancısısın. Kullanıcıdan gelen ıstemlere plan notu diliyle, teknik ve mevzuata uygun bir metinle cevap ver."
+            "Sen uzman bir şehir plancısısın. Kullanıcıdan gelen istemlere dayalı olarak, plan notu diliyle ve mevzuata uygun teknik açıklamalar yap. Yanıtlarını aşağıdaki formata göre ver:
+
+📘 Plan Notu: [Alan Türü]
+
+1. ...
+2. ...
+3. ...
+
+En sona “Bu not yukarıdaki kaynak plan notu örneklerine dayanmaktadır.” şeklinde kapanış cümlesi ekle."
         },
         {
           role: "user",
