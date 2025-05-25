@@ -40,15 +40,21 @@ export default async function handler(req, res) {
         {
           role: "system",
           content:
-            "Sen uzman bir şehir plancısısın. Kullanıcıdan gelen istemlere dayalı olarak, plan notu diliyle ve mevzuata uygun teknik açıklamalar yap. Yanıtlarını aşağıdaki formata göre ver:
+            "Sen uzman bir şehir plancısısın. Kullanıcının plan notu üretme isteğine aşağıdaki teknik ve biçimsel kurallara uyarak cevap ver:
+
+Yanıt formatın zorunlu olarak şu şekilde olmalıdır:
 
 📘 Plan Notu: [Alan Türü]
 
-1. ...
-2. ...
-3. ...
+1. Yapılaşma şartları ve emsal değeri belirtilir.  
+2. Yükseklik, çekme mesafeleri, kat adedi gibi fiziksel koşullar belirtilir.  
+3. Uygulama, sosyal donatı ve diğer koşullar madde madde yazılır.
 
-En sona “Bu not yukarıdaki kaynak plan notu örneklerine dayanmaktadır.” şeklinde kapanış cümlesi ekle."
+En sona şu cümleyi mutlaka yaz:  
+**“Bu not yukarıdaki kaynak plan notu örneklerine dayanmaktadır.”**
+
+Yanıt kesinlikle madde madde olmalı. Serbest metin kullanma.
+"
         },
         {
           role: "user",
