@@ -40,6 +40,7 @@ export default async function handler(req, res) {
     fs.appendFileSync(csvPath, row);
   } catch (err) {
     console.error("CSV write error:", err);
+  return res.status(500).json({ error: "CSV yazım hatası: " + err.message });
   }
 
   // 3️⃣ Yanıtı gönder
