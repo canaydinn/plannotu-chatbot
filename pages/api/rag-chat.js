@@ -12,7 +12,8 @@ const dataPath = path.join(process.cwd(), "data", "plan_chunks_master_v3.jsonl")
 const rawChunks = fs.readFileSync(dataPath, "utf-8")
   .split("\n")
   .filter(Boolean)
-  .map((line) => JSON.parse(line));
+  .map((line) => JSON.parse(line))
+  .filter(chunk => Array.isArray(chunk.embedding));
 
 console.log("📚 Chunk sayısı:", rawChunks.length);
 
