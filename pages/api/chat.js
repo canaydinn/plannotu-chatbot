@@ -1,16 +1,16 @@
 // pages/api/chat.js
-import fs from 'fs';
-import path from 'path';
+import { google } from 'googleapis';
 
 export default async function handler(req, res) {
   const { prompt } = req.body;
+  const user_id = 'web_user_1'; // dilersen oturumdan alabilirsin
 
   if (!prompt) {
-    return res.status(400).json({ error: "Prompt is required" });
+    return res.status(400).json({ error: 'Prompt is required' });
   }
 
   // 1️⃣ OpenAI'den yanıt al
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -25,24 +25,35 @@ export default async function handler(req, res) {
     }),
   });
 
-  const data = await response.json();
+  const data = await openaiRes.json();
   const reply = data.choices?.[0]?.message?.content || "Yanıt alınamadı.";
-
-  // 2️⃣ CSV dosyasına kaydet
-  const csvPath = path.join(process.cwd(), "messages.csv");
   const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
-  const row = `"${timestamp}","anonymous","${prompt.replace(/"/g, '""')}","${reply.replace(/"/g, '""')}"\n`;
 
+  // 2️⃣ Google Sheets'e kaydet
   try {
-    if (!fs.existsSync(csvPath)) {
-      fs.writeFileSync(csvPath, `"timestamp","user_id","prompt","response"\n`);
-    }
-    fs.appendFileSync(csvPath, row);
+    const creds = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+
+    const auth = new google.auth.GoogleAuth({
+      credentials: creds,
+      scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    });
+
+    const sheets = google.sheets({ version: "v4", auth });
+    const sheetId = process.env.GOOGLE_SHEET_ID;
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: sheetId,
+      range: "plan_notu!A:D",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [[timestamp, user_id, prompt, reply]],
+      },
+    });
+
   } catch (err) {
-    console.error("CSV write error:", err);
-  return res.status(500).json({ error: "CSV yazım hatası: " + err.message });
+    console.error("🛑 Sheets API error:", err.message);
   }
 
-  // 3️⃣ Yanıtı gönder
+  // 3️⃣ Cevabı frontend'e gönder
   res.status(200).json({ result: reply });
 }
