@@ -55,7 +55,7 @@ En sona şu cümleyi mutlaka yaz:
 **“Bu not yukarıdaki kaynak plan notu örneklerine dayanmaktadır.”**
 
 Yanıt kesinlikle madde madde olmalı. Serbest metin kullanma.
-      `
+`
     },
     {
       role: "user",
