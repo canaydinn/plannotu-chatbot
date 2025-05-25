@@ -6,4 +6,8 @@ export function cosineSimilarity(vecA, vecB) {
   const normA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
   const normB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
   return dotProduct / (normA * normB);
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 9ec22e01c65864020db0dec70cdbc7f8e68f39a9
