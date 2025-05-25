@@ -40,7 +40,7 @@ export default async function handler(req, res) {
   messages: [
     {
       role: "system",
-      content: `Sen uzman bir şehir plancısısın. Kullanıcının plan notu üretme isteğine aşağıdaki teknik ve biçimsel kurallara uyarak cevap ver:`
+      content: "Sen uzman bir şehir plancısısın. Kullanıcının plan notu üretme isteğine aşağıdaki teknik ve biçimsel kurallara uyarak cevap ver:"
     },
     {
       role: "user",
