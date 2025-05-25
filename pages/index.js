@@ -20,12 +20,7 @@ export default function Home() {
     const reply = { role: "assistant", content: replyText };
     setMessages((prev) => [...prev, newMessage, reply]);
 
-    // ✅ Google Sheets'e yaz
-    await axios.post("/api/save-message", {
-      user_id: "web_user_1",
-      prompt: input,
-      response: replyText,
-    });
+   
 
   } catch (err) {
     console.error("❌ Hata:", err.message);
