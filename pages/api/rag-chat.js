@@ -13,6 +13,7 @@ const rawChunks = fs.readFileSync(dataPath, "utf-8")
   .split("\n")
   .filter(Boolean)
   .map((line) => JSON.parse(line));
+console.log("📚 Chunk sayısı:", rawChunks.length); // ✅ BURAYA EKLE
 
 export default async function handler(req, res) {
   const { prompt } = req.body;
