@@ -9,7 +9,7 @@ export default async function handler(req, res) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "ft:gpt-3.5-turbo-0125:your-org:plan-notu-gpt:xyz123",
+      model: "ft:gpt-3.5-turbo-0125:deu:plan-notu-gpt-v1:Bb3Kr4j0",
       messages: [
         { role: "system", content: "Sen bir öğretmen asistanısın ve öğretmenlere plan hazırlamada yardımcı oluyorsun." },
         { role: "user", content: prompt },
