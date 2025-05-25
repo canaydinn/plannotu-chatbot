@@ -1,4 +1,8 @@
 // pages/api/rag-chat.js
+export const config = {
+  runtime: "nodejs"
+};
+
 import { OpenAI } from "openai";
 import fs from "fs";
 import path from "path";
